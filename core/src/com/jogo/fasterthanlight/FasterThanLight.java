@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
@@ -97,7 +98,7 @@ public class FasterThanLight extends ApplicationAdapter {
         estadoDoJogo = 0;
         pontuacao =0;
         posicaoVerticalCarroInimigo = numeroRandom.nextInt(2000) + 800 + carroInimigo.getHeight();
-        posicaoHorizontalCarroInimigo = numeroRandom.nextInt(600) + carroInimigo.getWidth();
+        posicaoHorizontalCarroInimigo = numeroRandom.nextInt(500) + carroInimigo.getWidth();
 
 	}
 
@@ -153,6 +154,7 @@ public class FasterThanLight extends ApplicationAdapter {
             Rectangle boundsLeft = new Rectangle(60, 30, 90, 90);
             Rectangle boundsRight = new Rectangle(680, 30, 90, 90);
             Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+
             camera.unproject(tmp);
             if (bounds.contains(tmp.x, tmp.y)) {
                 posicaoVerticalCarroPrincipal += 2;
@@ -191,9 +193,6 @@ public class FasterThanLight extends ApplicationAdapter {
                     posicaoVerticalCarroPrincipal -= 1;
                     apertouBaixo = true;
                     apertouCima = false;
-                } else {
-                    posicaoHorizontalCarroPrincipal -= 2;
-
                 }
 
             }
@@ -201,28 +200,35 @@ public class FasterThanLight extends ApplicationAdapter {
 
 
 
-        //Posições do pneu
+        //Posições do carro
 
-        if (posicaoHorizontalCarroInimigo < 255 ){
-            posicaoHorizontalCarroInimigo = 255 + carroInimigo.getWidth();
-        }
-        else if(posicaoHorizontalCarroInimigo > 600){
-            posicaoHorizontalCarroInimigo = 600 - carroInimigo.getWidth();
-        }
+
 
         if(posicaoVerticalCarroInimigo < -alturaDispositivo - carroInimigo.getWidth()){
             posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(2000) + carroInimigo.getHeight();
-            posicaoHorizontalCarroInimigo = numeroRandom.nextInt(600) +carroInimigo.getWidth();
-        }
-
-        }else{
-            if(Gdx.input.justTouched()){
-                estadoDoJogo =1;
-
+            posicaoHorizontalCarroInimigo = 255 + numeroRandom.nextInt(340) -carro.getWidth();
+            if (posicaoHorizontalCarroInimigo < 255 ){
+                posicaoHorizontalCarroInimigo = 255 + carroInimigo.getWidth();
+            }
+            else if(posicaoHorizontalCarroInimigo > 600){
+                posicaoHorizontalCarroInimigo = 600 - carroInimigo.getWidth();
             }
         }
 
 
+        }else if(estadoDoJogo ==2){
+            if(Gdx.input.justTouched()){
+                estadoDoJogo =1;
+                posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(2000) + carroInimigo.getHeight();
+                posicaoHorizontalCarroInimigo = numeroRandom.nextInt(600) +carroInimigo.getWidth();
+                posicaoHorizontalCarroPrincipal = larguraDispositivo /2 + carro.getWidth() /2;
+                pontuacao =0;
+                posicaoVerticalCarroPrincipal =   0;
+
+            }
+        }
+
+        Gdx.app.log("Posicao","Posicao " + posicaoHorizontalCarroInimigo);
 
         //Desenha na tela
         batch.setProjectionMatrix(camera.combined);
@@ -244,22 +250,35 @@ public class FasterThanLight extends ApplicationAdapter {
         shape.setProjectionMatrix(batch.getProjectionMatrix());
 
         retanguloCarroPrincipal = new Rectangle(
-            posicaoHorizontalCarroPrincipal,
+                posicaoHorizontalCarroPrincipal,
                 posicaoVerticalCarroPrincipal,
                 carro.getWidth(),
                 carro.getHeight()
         );
-
+        retanguloCarroInimigo = new Rectangle(
+                posicaoHorizontalCarroInimigo,
+                posicaoVerticalCarroInimigo,
+                60,
+                100
+        );
+/*
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
         shape.rect(retanguloCarroPrincipal.x,retanguloCarroPrincipal.y,retanguloCarroPrincipal.width,
                 retanguloCarroPrincipal.height);
+       shape.rect(retanguloCarroInimigo.x,retanguloCarroInimigo.y,retanguloCarroInimigo.width
+               ,retanguloCarroInimigo.height);
         shape.setColor(Color.RED);
 
 
         shape.end();
+*/
+        if(Intersector.overlaps(retanguloCarroPrincipal,retanguloCarroInimigo)){
+            estadoDoJogo = 2;
+            pontuacao = 30;
+        }
+	}
 
-    }
 	
 	@Override
 	public void dispose () {
@@ -269,5 +288,6 @@ public class FasterThanLight extends ApplicationAdapter {
         viewport.update(width,height);
 
    }
+
 
 }
