@@ -2,6 +2,8 @@ package com.jogo.fasterthanlight;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -46,6 +48,8 @@ public class FasterThanLight extends ApplicationAdapter {
     private BitmapFont pontos;
     private Random numeroRandom;
     private float posicaoVerticalCarroInimigo, posicaoHorizontalCarroInimigo;
+    private Sound bateu;
+    private boolean bateuSom;
 
 
     //Câmera
@@ -78,6 +82,7 @@ public class FasterThanLight extends ApplicationAdapter {
         shape = new ShapeRenderer();
         batch = new SpriteBatch();
 
+        bateu = Gdx.audio.newSound(Gdx.files.internal("carcrash.mp3"));
         retanguloCarroInimigo = new Rectangle();
         retanguloCarroPrincipal = new Rectangle();
 
@@ -119,9 +124,9 @@ public class FasterThanLight extends ApplicationAdapter {
 
 
         if(estadoDoJogo ==1) {
-            movimentoDoFundo -= deltaTime * 100;
-            movimentoDoSegundoFundo -= deltaTime * 100;
-            posicaoVerticalCarroInimigo -= deltaTime * 130;
+            movimentoDoFundo -= deltaTime * 300;
+            movimentoDoSegundoFundo -= deltaTime * 300;
+            posicaoVerticalCarroInimigo -= deltaTime * 300;
 
 
             //Fundo infinito
@@ -153,6 +158,7 @@ public class FasterThanLight extends ApplicationAdapter {
             Rectangle boundsDown = new Rectangle(680, alturaDispositivo / 2, 90, 90);
             Rectangle boundsLeft = new Rectangle(60, 30, 90, 90);
             Rectangle boundsRight = new Rectangle(680, 30, 90, 90);
+
             Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
             camera.unproject(tmp);
@@ -194,7 +200,7 @@ public class FasterThanLight extends ApplicationAdapter {
                     apertouBaixo = true;
                     apertouCima = false;
                 } else{
-                    posicaoHorizontalCarroInimigo -= 2;
+                    posicaoHorizontalCarroPrincipal -= 2;
                 }
 
             }
@@ -204,7 +210,7 @@ public class FasterThanLight extends ApplicationAdapter {
 
         //Posições do  inimigo
             if(posicaoHorizontalCarroInimigo > 600){
-                posicaoHorizontalCarroInimigo = 500;
+                posicaoHorizontalCarroInimigo = 500 + numeroRandom.nextInt(50);
             }
             if (posicaoHorizontalCarroInimigo < 255 ){
                 posicaoHorizontalCarroInimigo = 255 + carroInimigo.getWidth();
@@ -224,6 +230,7 @@ public class FasterThanLight extends ApplicationAdapter {
                 posicaoHorizontalCarroPrincipal = larguraDispositivo /2 + carro.getWidth() /2;
                 pontuacao =0;
                 posicaoVerticalCarroPrincipal =   0;
+                bateuSom = false;
 
             }
         }
@@ -276,6 +283,10 @@ public class FasterThanLight extends ApplicationAdapter {
         if(Intersector.overlaps(retanguloCarroPrincipal,retanguloCarroInimigo)){
             estadoDoJogo = 2;
             pontuacao = 30;
+            if (bateuSom == false){
+                bateu.play();
+                bateuSom = true;
+            }
         }
 	}
 
