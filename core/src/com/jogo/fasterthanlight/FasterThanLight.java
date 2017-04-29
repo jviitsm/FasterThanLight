@@ -193,9 +193,8 @@ public class FasterThanLight extends ApplicationAdapter {
                     posicaoVerticalCarroPrincipal -= 1;
                     apertouBaixo = true;
                     apertouCima = false;
-                }
-                else{
-                    posicaoVerticalCarroInimigo -= 1;
+                } else{
+                    posicaoHorizontalCarroInimigo -= 2;
                 }
 
             }
@@ -217,8 +216,6 @@ public class FasterThanLight extends ApplicationAdapter {
 
 
         }
-
-
         }else if(estadoDoJogo ==2){
             if(Gdx.input.justTouched()){
                 estadoDoJogo =1;
