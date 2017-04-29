@@ -22,13 +22,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.Random;
+
 public class FasterThanLight extends ApplicationAdapter {
 
-    private Texture carro,fundo,segundoFundo;
+    private Texture carro,fundo,segundoFundo,carroInimigo;
 	private ShapeRenderer shape;
     public static SpriteBatch batch;
     private Texture btl,btr,btu,btd;
-    private Boolean apertouCima = false;
+    private Boolean apertouCima = false,apertouBaixo = false;
+    private Rectangle retanguloCarroInimigo,retanguloCarroPrincipal;
 
 
     //Atributos
@@ -40,6 +43,9 @@ public class FasterThanLight extends ApplicationAdapter {
     private int estadoDoJogo;
     private int pontuacao;
     private BitmapFont pontos;
+    private Random numeroRandom;
+    private float posicaoVerticalCarroInimigo, posicaoHorizontalCarroInimigo;
+
 
     //Câmera
     private OrthographicCamera camera;
@@ -60,7 +66,9 @@ public class FasterThanLight extends ApplicationAdapter {
         btu = new Texture("flatDark25.png");
         btl = new Texture("flatDark23.png");
         btr = new Texture("flatDark24.png");
+        carroInimigo = new Texture("carroPrincipal.png");
 
+        numeroRandom = new Random();
 
         pontos = new BitmapFont();
         pontos.setColor(Color.WHITE);
@@ -69,6 +77,8 @@ public class FasterThanLight extends ApplicationAdapter {
         shape = new ShapeRenderer();
         batch = new SpriteBatch();
 
+        retanguloCarroInimigo = new Rectangle();
+        retanguloCarroPrincipal = new Rectangle();
 
 
         camera = new OrthographicCamera();
@@ -86,6 +96,8 @@ public class FasterThanLight extends ApplicationAdapter {
         posicaoVerticalCarroPrincipal =   0;
         estadoDoJogo = 0;
         pontuacao =0;
+        posicaoVerticalCarroInimigo = numeroRandom.nextInt(2000) + 800 + carroInimigo.getHeight();
+        posicaoHorizontalCarroInimigo = numeroRandom.nextInt(600) + carroInimigo.getWidth();
 
 	}
 
@@ -98,72 +110,129 @@ public class FasterThanLight extends ApplicationAdapter {
         deltaTime = Gdx.graphics.getDeltaTime();
 
 
-
-
-
-
-        movimentoDoFundo -= deltaTime * 100;
-        movimentoDoSegundoFundo -= deltaTime *100;
-
-
-       //Fundo infinito
-        if(movimentoDoFundo <- alturaDispositivo){
-            movimentoDoFundo = alturaDispositivo;
-        }
-        if(movimentoDoSegundoFundo < - alturaDispositivo - alturaDispositivo){
-            movimentoDoSegundoFundo = movimentoDoFundo;
+        if(estadoDoJogo ==0){
+            if(Gdx.input.justTouched()){
+                estadoDoJogo =1;
+            }
         }
 
 
-
-        //Impossibilita o carro de sair da tela
-        if(posicaoVerticalCarroPrincipal <= 0){
-            posicaoVerticalCarroPrincipal =0;
-        }
-        if(posicaoVerticalCarroPrincipal >= 600 - carro.getHeight()  ){
-            posicaoVerticalCarroPrincipal = 600 - carro.getHeight() ;
-        }
-        if(posicaoHorizontalCarroPrincipal <=255 - carro.getWidth()){
-            posicaoHorizontalCarroPrincipal =255 - carro.getWidth();
-        }
-        if(posicaoHorizontalCarroPrincipal >= 600 - carro.getWidth()){
-            posicaoHorizontalCarroPrincipal = 600 - carro.getWidth();
-        }
+        if(estadoDoJogo ==1) {
+            movimentoDoFundo -= deltaTime * 100;
+            movimentoDoSegundoFundo -= deltaTime * 100;
+            posicaoVerticalCarroInimigo -= deltaTime * 130;
 
 
+            //Fundo infinito
+            if (movimentoDoFundo < -alturaDispositivo) {
+                movimentoDoFundo = alturaDispositivo;
+            }
+            if (movimentoDoSegundoFundo < -alturaDispositivo - alturaDispositivo) {
+                movimentoDoSegundoFundo = movimentoDoFundo;
+            }
 
-       Rectangle bounds = new Rectangle(60,alturaDispositivo /2,90,90);
-       Rectangle boundsDown = new Rectangle(680,alturaDispositivo /2,90,90);
-        Rectangle boundsLeft = new Rectangle(60,30,90,90);
-        Rectangle boundsRight = new Rectangle(680,30,90,90);
-        Vector3 tmp = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
-        camera.unproject(tmp);
+
+            //Impossibilita o carro de sair da tela
+            if (posicaoVerticalCarroPrincipal <= 0) {
+                posicaoVerticalCarroPrincipal = 0;
+            }
+            if (posicaoVerticalCarroPrincipal >= 600 - carro.getHeight()) {
+                posicaoVerticalCarroPrincipal = 600 - carro.getHeight();
+            }
+            if (posicaoHorizontalCarroPrincipal <= 255 - carro.getWidth()) {
+                posicaoHorizontalCarroPrincipal = 255 - carro.getWidth();
+            }
+            if (posicaoHorizontalCarroPrincipal >= 600 - carro.getWidth()) {
+                posicaoHorizontalCarroPrincipal = 600 - carro.getWidth();
+            }
 
 
-        if(bounds.contains(tmp.x,tmp.y)){
+            //Botões para se mover
+            Rectangle bounds = new Rectangle(60, alturaDispositivo / 2, 90, 90);
+            Rectangle boundsDown = new Rectangle(680, alturaDispositivo / 2, 90, 90);
+            Rectangle boundsLeft = new Rectangle(60, 30, 90, 90);
+            Rectangle boundsRight = new Rectangle(680, 30, 90, 90);
+            Vector3 tmp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(tmp);
+            if (bounds.contains(tmp.x, tmp.y)) {
                 posicaoVerticalCarroPrincipal += 2;
+                apertouCima = true;
+                apertouBaixo = false;
+            }
+            if (boundsDown.contains(tmp.x, tmp.y)) {
+                posicaoVerticalCarroPrincipal -= 2;
+                apertouBaixo = true;
+                apertouCima = false;
+            }
+            if (boundsRight.contains(tmp.x, tmp.y)) {
+                if (apertouCima == true) {
+                    posicaoHorizontalCarroPrincipal += 2;
+                    posicaoVerticalCarroPrincipal += 1;
+                    apertouCima = true;
+                    apertouBaixo = false;
+                } else if (apertouBaixo = true) {
+                    posicaoHorizontalCarroPrincipal += 2;
+                    posicaoVerticalCarroPrincipal -= 1;
+                    apertouBaixo = true;
+                    apertouCima = false;
+                } else {
+                    posicaoHorizontalCarroPrincipal += 2;
+
+                }
+            }
+            if (boundsLeft.contains(tmp.x, tmp.y)) {
+                if (apertouCima == true) {
+                    posicaoHorizontalCarroPrincipal -= 2;
+                    posicaoVerticalCarroPrincipal += 1;
+                    apertouCima = true;
+                    apertouBaixo = false;
+                } else if (apertouBaixo == true) {
+                    posicaoHorizontalCarroPrincipal -= 2;
+                    posicaoVerticalCarroPrincipal -= 1;
+                    apertouBaixo = true;
+                    apertouCima = false;
+                } else {
+                    posicaoHorizontalCarroPrincipal -= 2;
+
+                }
+
+            }
+
+
+
+
+        //Posições do pneu
+
+        if (posicaoHorizontalCarroInimigo < 255 ){
+            posicaoHorizontalCarroInimigo = 255 + carroInimigo.getWidth();
         }
-        if(boundsDown.contains(tmp.x,tmp.y)){
-            posicaoVerticalCarroPrincipal -= 2;
-
-        }
-        if(boundsRight.contains(tmp.x,tmp.y)){
-            posicaoHorizontalCarroPrincipal += 2;
-        }
-        if(boundsLeft.contains(tmp.x,tmp.y)){
-            posicaoHorizontalCarroPrincipal -= 2;
+        else if(posicaoHorizontalCarroInimigo > 600){
+            posicaoHorizontalCarroInimigo = 600 - carroInimigo.getWidth();
         }
 
+        if(posicaoVerticalCarroInimigo < -alturaDispositivo - carroInimigo.getWidth()){
+            posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(2000) + carroInimigo.getHeight();
+            posicaoHorizontalCarroInimigo = numeroRandom.nextInt(600) +carroInimigo.getWidth();
+        }
+
+        }else{
+            if(Gdx.input.justTouched()){
+                estadoDoJogo =1;
+
+            }
+        }
 
 
 
+        //Desenha na tela
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         batch.draw(fundo,0,movimentoDoFundo,larguraDispositivo,alturaDispositivo);
         batch.draw(fundo,0,movimentoDoSegundoFundo + alturaDispositivo,larguraDispositivo,alturaDispositivo);
+        batch.draw(carroInimigo,posicaoHorizontalCarroInimigo,posicaoVerticalCarroInimigo,60,100);
         batch.draw(carro,posicaoHorizontalCarroPrincipal,posicaoVerticalCarroPrincipal);
-        pontos.draw(batch,String.valueOf(pontuacao),larguraDispositivo - 60,alturaDispositivo - 30);
+        pontos.draw(batch,String.valueOf(pontuacao),larguraDispositivo - 130,alturaDispositivo - 30);
         batch.draw(btd,680,alturaDispositivo /2,90,90);
         batch.draw(btu,60,alturaDispositivo /2,90,90);
         batch.draw(btl,60,30,90,90);
@@ -172,9 +241,25 @@ public class FasterThanLight extends ApplicationAdapter {
 
         batch.end();
 
+        shape.setProjectionMatrix(batch.getProjectionMatrix());
+
+        retanguloCarroPrincipal = new Rectangle(
+            posicaoHorizontalCarroPrincipal,
+                posicaoVerticalCarroPrincipal,
+                carro.getWidth(),
+                carro.getHeight()
+        );
+
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+
+        shape.rect(retanguloCarroPrincipal.x,retanguloCarroPrincipal.y,retanguloCarroPrincipal.width,
+                retanguloCarroPrincipal.height);
+        shape.setColor(Color.RED);
 
 
-	}
+        shape.end();
+
+    }
 	
 	@Override
 	public void dispose () {
