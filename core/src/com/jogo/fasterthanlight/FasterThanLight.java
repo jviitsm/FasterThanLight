@@ -194,25 +194,28 @@ public class FasterThanLight extends ApplicationAdapter {
                     apertouBaixo = true;
                     apertouCima = false;
                 }
+                else{
+                    posicaoVerticalCarroInimigo -= 1;
+                }
 
             }
 
 
 
 
-        //Posições do carro
-
-
+        //Posições do  inimigo
+            if(posicaoHorizontalCarroInimigo > 600){
+                posicaoHorizontalCarroInimigo = 500;
+            }
+            if (posicaoHorizontalCarroInimigo < 255 ){
+                posicaoHorizontalCarroInimigo = 255 + carroInimigo.getWidth();
+            }
 
         if(posicaoVerticalCarroInimigo < -alturaDispositivo - carroInimigo.getWidth()){
             posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(2000) + carroInimigo.getHeight();
             posicaoHorizontalCarroInimigo = 255 + numeroRandom.nextInt(340) -carro.getWidth();
-            if (posicaoHorizontalCarroInimigo < 255 ){
-                posicaoHorizontalCarroInimigo = 255 + carroInimigo.getWidth();
-            }
-            else if(posicaoHorizontalCarroInimigo > 600){
-                posicaoHorizontalCarroInimigo = 600 - carroInimigo.getWidth();
-            }
+
+
         }
 
 
@@ -220,7 +223,7 @@ public class FasterThanLight extends ApplicationAdapter {
             if(Gdx.input.justTouched()){
                 estadoDoJogo =1;
                 posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(2000) + carroInimigo.getHeight();
-                posicaoHorizontalCarroInimigo = numeroRandom.nextInt(600) +carroInimigo.getWidth();
+                posicaoHorizontalCarroInimigo = 255 + numeroRandom.nextInt(300) -carro.getWidth();
                 posicaoHorizontalCarroPrincipal = larguraDispositivo /2 + carro.getWidth() /2;
                 pontuacao =0;
                 posicaoVerticalCarroPrincipal =   0;
