@@ -58,10 +58,12 @@ public class FasterThanLight extends ApplicationAdapter {
         segundoFundo = new Texture("fundo.jpg");
         btd = new Texture("flatDark26.png");
         btu = new Texture("flatDark25.png");
+        btl = new Texture("flatDark23.png");
+        btr = new Texture("flatDark24.png");
 
 
         pontos = new BitmapFont();
-        pontos.setColor(Color.BLACK);
+        pontos.setColor(Color.WHITE);
         pontos.getData().setScale(5);
 
         shape = new ShapeRenderer();
@@ -121,21 +123,35 @@ public class FasterThanLight extends ApplicationAdapter {
         if(posicaoVerticalCarroPrincipal >= 600 - carro.getHeight()  ){
             posicaoVerticalCarroPrincipal = 600 - carro.getHeight() ;
         }
+        if(posicaoHorizontalCarroPrincipal <=255 - carro.getWidth()){
+            posicaoHorizontalCarroPrincipal =255 - carro.getWidth();
+        }
+        if(posicaoHorizontalCarroPrincipal >= 600 - carro.getWidth()){
+            posicaoHorizontalCarroPrincipal = 600 - carro.getWidth();
+        }
 
 
 
-       Rectangle bounds = new Rectangle(30,20 + btu.getHeight(),btu.getWidth(),btu.getHeight());
-       Rectangle boundsDown = new Rectangle(30,20,65,65);
+       Rectangle bounds = new Rectangle(60,alturaDispositivo /2,90,90);
+       Rectangle boundsDown = new Rectangle(680,alturaDispositivo /2,90,90);
+        Rectangle boundsLeft = new Rectangle(60,30,90,90);
+        Rectangle boundsRight = new Rectangle(680,30,90,90);
         Vector3 tmp = new Vector3(Gdx.input.getX(),Gdx.input.getY(),0);
         camera.unproject(tmp);
 
 
         if(bounds.contains(tmp.x,tmp.y)){
-                posicaoVerticalCarroPrincipal += 1;
+                posicaoVerticalCarroPrincipal += 2;
         }
         if(boundsDown.contains(tmp.x,tmp.y)){
-            posicaoVerticalCarroPrincipal -= 1;
+            posicaoVerticalCarroPrincipal -= 2;
 
+        }
+        if(boundsRight.contains(tmp.x,tmp.y)){
+            posicaoHorizontalCarroPrincipal += 2;
+        }
+        if(boundsLeft.contains(tmp.x,tmp.y)){
+            posicaoHorizontalCarroPrincipal -= 2;
         }
 
 
@@ -148,15 +164,15 @@ public class FasterThanLight extends ApplicationAdapter {
         batch.draw(fundo,0,movimentoDoSegundoFundo + alturaDispositivo,larguraDispositivo,alturaDispositivo);
         batch.draw(carro,posicaoHorizontalCarroPrincipal,posicaoVerticalCarroPrincipal);
         pontos.draw(batch,String.valueOf(pontuacao),larguraDispositivo - 60,alturaDispositivo - 30);
-        batch.draw(btd,30,20,65,65);
-        batch.draw(btu,30,20 + btu.getHeight(),65,65);
+        batch.draw(btd,680,alturaDispositivo /2,90,90);
+        batch.draw(btu,60,alturaDispositivo /2,90,90);
+        batch.draw(btl,60,30,90,90);
+        batch.draw(btr,680,30,90,90);
+
 
         batch.end();
 
-        shape.begin(ShapeRenderer.ShapeType.Filled);
-            shape.rect(30,20+btu.getHeight(),65,65);
 
-        shape.end();
 
 	}
 	
