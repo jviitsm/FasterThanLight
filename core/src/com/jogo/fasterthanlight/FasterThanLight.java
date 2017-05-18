@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class FasterThanLight extends ApplicationAdapter {
@@ -35,7 +36,7 @@ public class FasterThanLight extends ApplicationAdapter {
     private Texture btl,btr,btu,btd;
     private Boolean apertouCima = false,apertouBaixo = false;
     private Rectangle retanguloCarroInimigo,retanguloCarroPrincipal;
-
+    private DecimalFormat df = new DecimalFormat("0");
 
     //Atributos
     private float larguraDispositivo,alturaDispositivo;
@@ -44,12 +45,13 @@ public class FasterThanLight extends ApplicationAdapter {
     private float posicaoHorizontalCarroPrincipal;
     private float deltaTime;
     private int estadoDoJogo;
-    private int pontuacao;
+    private float pontuacao;
     private BitmapFont pontos;
     private Random numeroRandom;
     private float posicaoVerticalCarroInimigo, posicaoHorizontalCarroInimigo;
     private Sound bateu;
     private boolean bateuSom;
+
 
 
     //Câmera
@@ -105,6 +107,7 @@ public class FasterThanLight extends ApplicationAdapter {
         posicaoVerticalCarroInimigo = numeroRandom.nextInt(2000) + 800 + carroInimigo.getHeight();
         posicaoHorizontalCarroInimigo = numeroRandom.nextInt(500) + carroInimigo.getWidth();
 
+
 	}
 
 	@Override
@@ -127,6 +130,7 @@ public class FasterThanLight extends ApplicationAdapter {
             movimentoDoFundo -= deltaTime * 300;
             movimentoDoSegundoFundo -= deltaTime * 300;
             posicaoVerticalCarroInimigo -= deltaTime * 300;
+            pontuacao += deltaTime * 0.5;
 
 
             //Fundo infinito
@@ -217,7 +221,7 @@ public class FasterThanLight extends ApplicationAdapter {
             }
 
         if(posicaoVerticalCarroInimigo < -alturaDispositivo - carroInimigo.getWidth()){
-            posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(2000) + carroInimigo.getHeight();
+            posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(800) + carroInimigo.getHeight();
             posicaoHorizontalCarroInimigo = 255 + numeroRandom.nextInt(340) -carro.getWidth();
 
 
@@ -236,7 +240,6 @@ public class FasterThanLight extends ApplicationAdapter {
         }
 
         Gdx.app.log("Posicao","Posicao " + posicaoHorizontalCarroInimigo);
-
         //Desenha na tela
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -245,7 +248,7 @@ public class FasterThanLight extends ApplicationAdapter {
         batch.draw(fundo,0,movimentoDoSegundoFundo + alturaDispositivo,larguraDispositivo,alturaDispositivo);
         batch.draw(carroInimigo,posicaoHorizontalCarroInimigo,posicaoVerticalCarroInimigo,60,100);
         batch.draw(carro,posicaoHorizontalCarroPrincipal,posicaoVerticalCarroPrincipal);
-        pontos.draw(batch,String.valueOf(pontuacao),larguraDispositivo - 130,alturaDispositivo - 30);
+        pontos.draw(batch,String.valueOf(df.format(pontuacao)),larguraDispositivo - 130,alturaDispositivo - 30);
         batch.draw(btd,680,alturaDispositivo /2,90,90);
         batch.draw(btu,60,alturaDispositivo /2,90,90);
         batch.draw(btl,60,30,90,90);
