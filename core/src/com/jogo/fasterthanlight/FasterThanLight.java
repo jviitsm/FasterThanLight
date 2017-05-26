@@ -288,7 +288,7 @@ public class FasterThanLight extends ApplicationAdapter {
                 50
         );
 
-
+/*
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
         shape.rect(retanguloCarroPrincipal.x,retanguloCarroPrincipal.y,retanguloCarroPrincipal.width,
@@ -298,7 +298,7 @@ public class FasterThanLight extends ApplicationAdapter {
         shape.rect(retanguloBicho.x,retanguloBicho.y,retanguloBicho.width,retanguloBicho.height);
         shape.setColor(Color.RED);
 
-
+*/
 
         shape.end();
 
