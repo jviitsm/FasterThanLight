@@ -40,8 +40,8 @@ public class FasterThanLight extends ApplicationAdapter {
     private BitmapFont pontos;
     private Random numeroRandom;
     private float posicaoVerticalCarroInimigo, posicaoHorizontalCarroInimigo;
-    private Sound bateu;
-    private boolean bateuSom;
+    private Sound bateu,grito;
+    private boolean bateuSom,bateuSomBicho;
 
 
 
@@ -77,6 +77,7 @@ public class FasterThanLight extends ApplicationAdapter {
         batch = new SpriteBatch();
 
         bateu = Gdx.audio.newSound(Gdx.files.internal("carcrash.mp3"));
+        grito = Gdx.audio.newSound(Gdx.files.internal("grito.mp3"));
         retanguloCarroInimigo = new Rectangle();
         retanguloCarroPrincipal = new Rectangle();
         retanguloBicho = new Rectangle();
@@ -98,8 +99,8 @@ public class FasterThanLight extends ApplicationAdapter {
         pontuacao =0;
         posicaoVerticalCarroInimigo = numeroRandom.nextInt(2000) + 800 + carroInimigo.getHeight();
         posicaoHorizontalCarroInimigo = numeroRandom.nextInt(500) + carroInimigo.getWidth();
-        posicaoVerticalBicho = numeroRandom.nextInt(1500) + 800 + obstaculoBicho.getHeight();
-        posicaoHorizontalBicho = numeroRandom.nextInt(500) + obstaculoBicho.getWidth();
+        posicaoVerticalBicho = numeroRandom.nextInt(1500) + 900;
+        posicaoHorizontalBicho = numeroRandom.nextInt(500) + 80;
 
 // 170,550,
 	}
@@ -123,7 +124,7 @@ public class FasterThanLight extends ApplicationAdapter {
         if(estadoDoJogo ==1) {
             movimentoDoFundo -= deltaTime * 300;
             movimentoDoSegundoFundo -= deltaTime * 300;
-            posicaoVerticalCarroInimigo -= deltaTime * 400;
+            posicaoVerticalCarroInimigo -= deltaTime * 250;
             posicaoVerticalBicho -= deltaTime * 300;
             pontuacao += deltaTime * 0.5;
 
@@ -214,23 +215,23 @@ public class FasterThanLight extends ApplicationAdapter {
             posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(800) + carroInimigo.getHeight();
             posicaoHorizontalCarroInimigo = 255 + numeroRandom.nextInt(340);
         }
-        if(posicaoVerticalBicho <-alturaDispositivo - obstaculoBicho.getHeight()){
-            posicaoVerticalBicho = 800 + numeroRandom.nextInt(500) + obstaculoBicho.getHeight();
-            posicaoHorizontalBicho = 170 + numeroRandom.nextInt(350) - obstaculoBicho.getWidth();
+        if(posicaoVerticalBicho < -alturaDispositivo - 100){
+            posicaoVerticalBicho = 900 + numeroRandom.nextInt(800);
+            posicaoHorizontalBicho = 180 + numeroRandom.nextInt(375);
         }
+
             if(posicaoHorizontalCarroInimigo > 600){
                 posicaoHorizontalCarroInimigo = 500 + numeroRandom.nextInt(50);
             }
             if (posicaoHorizontalCarroInimigo < 255 ){
                 posicaoHorizontalCarroInimigo = 255 + carroInimigo.getWidth();
             }
-            if(posicaoHorizontalBicho < 170){
-                posicaoHorizontalBicho = 170 + obstaculoBicho.getWidth();
-            }
-            if(posicaoHorizontalBicho > 550){
-                posicaoHorizontalBicho = 50 + numeroRandom.nextInt(50);
-            }
-
+        if(posicaoHorizontalBicho < 180){
+            posicaoHorizontalBicho = 180;
+        }
+        if(posicaoHorizontalBicho > 555){
+            posicaoHorizontalBicho = 555;
+        }
           Gdx.app.log("alo","Posiçção " + posicaoHorizontalBicho);
         }else if(estadoDoJogo ==2){
             if(Gdx.input.justTouched()){
@@ -243,6 +244,7 @@ public class FasterThanLight extends ApplicationAdapter {
                 pontuacao =0;
                 posicaoVerticalCarroPrincipal =   0;
                 bateuSom = false;
+                bateuSomBicho = false;
 
             }
         }
@@ -254,7 +256,7 @@ public class FasterThanLight extends ApplicationAdapter {
         batch.draw(fundo,0,movimentoDoFundo,larguraDispositivo,alturaDispositivo);
         batch.draw(fundo,0,movimentoDoSegundoFundo + alturaDispositivo,larguraDispositivo,alturaDispositivo);
         batch.draw(carroInimigo,posicaoHorizontalCarroInimigo,posicaoVerticalCarroInimigo,60,100);
-        batch.draw(obstaculoBicho,posicaoHorizontalBicho,posicaoVerticalBicho,80,100);
+        batch.draw(obstaculoBicho,posicaoHorizontalBicho,posicaoVerticalBicho,55,55);
         batch.draw(carro,posicaoHorizontalCarroPrincipal,posicaoVerticalCarroPrincipal);
         pontos.draw(batch,String.valueOf(df.format(pontuacao)),larguraDispositivo - 130,alturaDispositivo - 30);
         batch.draw(btd,680,alturaDispositivo /2,90,90);
@@ -279,27 +281,49 @@ public class FasterThanLight extends ApplicationAdapter {
                 60,
                 100
         );
-/*
+        retanguloBicho = new Rectangle(
+                posicaoHorizontalBicho + 9,
+                posicaoVerticalBicho,
+                38,
+                50
+        );
+
+
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
         shape.rect(retanguloCarroPrincipal.x,retanguloCarroPrincipal.y,retanguloCarroPrincipal.width,
                 retanguloCarroPrincipal.height);
        shape.rect(retanguloCarroInimigo.x,retanguloCarroInimigo.y,retanguloCarroInimigo.width
                ,retanguloCarroInimigo.height);
+        shape.rect(retanguloBicho.x,retanguloBicho.y,retanguloBicho.width,retanguloBicho.height);
         shape.setColor(Color.RED);
 
 
+
         shape.end();
-*/
+
         if(Intersector.overlaps(retanguloCarroPrincipal,retanguloCarroInimigo)){
             estadoDoJogo = 2;
-            pontuacao = 30;
             if (bateuSom == false){
                 bateu.play();
                 bateuSom = true;
             }
         }
+	    if(Intersector.overlaps(retanguloBicho,retanguloCarroInimigo)){
+            posicaoHorizontalBicho += 30;
+            posicaoVerticalCarroInimigo -= 30;
+        }
+        if(Intersector.overlaps(retanguloCarroPrincipal,retanguloBicho)){
+            estadoDoJogo =2;
+            if(bateuSomBicho == false){
+                grito.play();
+                bateuSomBicho = true;
+            }
+        }
+
+
 	}
+
 
 	
 	@Override
