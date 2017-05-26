@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -20,7 +21,7 @@ import java.util.Random;
 
 public class FasterThanLight extends ApplicationAdapter {
 
-    private Texture carro,fundo,segundoFundo,carroInimigo, obstaculoBicho;
+    private Texture carro,fundo,segundoFundo,carroInimigo, obstaculoBicho,gameOver;
 	private ShapeRenderer shape;
     public static SpriteBatch batch;
     private Texture btl,btr,btu,btd;
@@ -64,6 +65,7 @@ public class FasterThanLight extends ApplicationAdapter {
         btu = new Texture("flatDark25.png");
         btl = new Texture("flatDark23.png");
         btr = new Texture("flatDark24.png");
+        gameOver = new Texture("over.png");
         carroInimigo = new Texture("carroPrincipal.png");
         obstaculoBicho = new Texture("obstaculo1.png");
 
@@ -124,7 +126,7 @@ public class FasterThanLight extends ApplicationAdapter {
         if(estadoDoJogo ==1) {
             movimentoDoFundo -= deltaTime * 300;
             movimentoDoSegundoFundo -= deltaTime * 300;
-            posicaoVerticalCarroInimigo -= deltaTime * 250;
+            posicaoVerticalCarroInimigo -= deltaTime * 300;
             posicaoVerticalBicho -= deltaTime * 300;
             pontuacao += deltaTime * 0.5;
 
@@ -232,8 +234,8 @@ public class FasterThanLight extends ApplicationAdapter {
         if(posicaoHorizontalBicho > 555){
             posicaoHorizontalBicho = 555;
         }
-          Gdx.app.log("alo","Posiçção " + posicaoHorizontalBicho);
         }else if(estadoDoJogo ==2){
+
             if(Gdx.input.justTouched()){
                 estadoDoJogo =1;
                 posicaoVerticalCarroInimigo = 800 + numeroRandom.nextInt(2000) + carroInimigo.getHeight();
@@ -263,6 +265,9 @@ public class FasterThanLight extends ApplicationAdapter {
         batch.draw(btu,60,alturaDispositivo /2,90,90);
         batch.draw(btl,60,30,90,90);
         batch.draw(btr,680,30,90,90);
+        if(estadoDoJogo == 2){
+            batch.draw(gameOver,250,300 /2,350,350);
+        }
 
 
         batch.end();
