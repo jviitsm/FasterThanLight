@@ -2,6 +2,7 @@ package com.jogo.fasterthanlight;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -42,6 +43,7 @@ public class FasterThanLight extends ApplicationAdapter {
     private Random numeroRandom;
     private float posicaoVerticalCarroInimigo, posicaoHorizontalCarroInimigo;
     private Sound bateu,grito;
+    private Music musica;
     private boolean bateuSom,bateuSomBicho;
 
 
@@ -84,6 +86,10 @@ public class FasterThanLight extends ApplicationAdapter {
         retanguloCarroPrincipal = new Rectangle();
         retanguloBicho = new Rectangle();
 
+        musica = Gdx.audio.newMusic(Gdx.files.internal("musica.mp3"));
+        musica.setLooping(true);
+        musica.setVolume(0.5f);
+        musica.play();
         camera = new OrthographicCamera();
         camera.position.set(VIRTUAL_WIDTH /2,VIRTUAL_HEIGHT /2,0);
         viewport = new StretchViewport(VIRTUAL_WIDTH,VIRTUAL_HEIGHT,camera);
@@ -124,12 +130,28 @@ public class FasterThanLight extends ApplicationAdapter {
 
 
         if(estadoDoJogo ==1) {
-            movimentoDoFundo -= deltaTime * 300;
-            movimentoDoSegundoFundo -= deltaTime * 300;
-            posicaoVerticalCarroInimigo -= deltaTime * 300;
-            posicaoVerticalBicho -= deltaTime * 300;
-            pontuacao += deltaTime * 0.5;
 
+            if(pontuacao < 30){
+                movimentoDoFundo -= deltaTime * 300;
+                movimentoDoSegundoFundo -= deltaTime * 300;
+                posicaoVerticalCarroInimigo -= deltaTime * 300;
+                posicaoVerticalBicho -= deltaTime * 300;
+                pontuacao += deltaTime * 1;
+            }
+            else if(pontuacao > 30 && pontuacao < 60){
+                movimentoDoFundo -= deltaTime * 450;
+                movimentoDoSegundoFundo -= deltaTime * 450;
+                posicaoVerticalCarroInimigo -= deltaTime * 450;
+                posicaoVerticalBicho -= deltaTime * 450;
+                pontuacao += deltaTime * 2;
+            }
+            else if(pontuacao > 60){
+                movimentoDoFundo -= deltaTime * 800;
+                movimentoDoSegundoFundo -= deltaTime * 800;
+                posicaoVerticalCarroInimigo -= deltaTime * 800;
+                posicaoVerticalBicho -= deltaTime * 800;
+                pontuacao += deltaTime * 4;
+            }
 
             //Fundo infinito
             if (movimentoDoFundo < -alturaDispositivo) {
