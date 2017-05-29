@@ -2,6 +2,7 @@ package com.jogo.fasterthanlight;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -14,11 +15,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.text.DecimalFormat;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
 
 public class FasterThanLight extends ApplicationAdapter {
 
@@ -45,8 +50,7 @@ public class FasterThanLight extends ApplicationAdapter {
     private Sound bateu,grito;
     private Music musica;
     private boolean bateuSom,bateuSomBicho;
-
-
+    private MyTextInputListener text;
 
     //Câmera
     private OrthographicCamera camera;
@@ -57,7 +61,16 @@ public class FasterThanLight extends ApplicationAdapter {
 
 
 
-	@Override
+
+    public float getPontuacao() {
+        return pontuacao;
+    }
+
+    public void setPontuacao(float pontuacao) {
+        this.pontuacao = pontuacao;
+    }
+
+    @Override
 	public void create () {
 
         carro = new Texture("carroteste.png");
@@ -110,8 +123,10 @@ public class FasterThanLight extends ApplicationAdapter {
         posicaoVerticalBicho = numeroRandom.nextInt(1500) + 900;
         posicaoHorizontalBicho = numeroRandom.nextInt(500) + 80;
 
-// 170,550,
-	}
+
+
+
+    }
 
 	@Override
 	public void render () {
@@ -257,6 +272,13 @@ public class FasterThanLight extends ApplicationAdapter {
             posicaoHorizontalBicho = 555;
         }
         }else if(estadoDoJogo ==2){
+
+
+            MyTextInputListener listener = new MyTextInputListener();
+            Gdx.input.getTextInput(listener, "Seu nome","ALo","jose");
+
+
+
 
             if(Gdx.input.justTouched()){
                 estadoDoJogo =1;
